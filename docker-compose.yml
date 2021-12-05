@@ -5,18 +5,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/cradle
     depends_on:
       - db
-    environment:
-      - SPRING_R2DBC_URL=r2dbc:pool:mysql://localhost:3306/
-      - SPRING_R2DBC_USERNAME=root
-      - SPRING_R2DBC_PASSWORD=root
+    ports:
+      - "8080:8080"
 
   db:
-    image: "mysql:latest"
+    image: "mysql:8"
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=
-      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=cradle
     ports:
-      - "3306:3306"
+      - "3300:3306"
