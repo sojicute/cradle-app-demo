@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "elements")
 public class Element {
@@ -22,4 +22,13 @@ public class Element {
 
     @Column(name = "text")
     private String text;
+
+    @ManyToOne
+    @JoinColumn(name = "road_id")
+    private Road road;
+
+    public Element(String title, String text) {
+        this.title = title;
+        this.text = text;
+    }
 }
