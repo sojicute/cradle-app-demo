@@ -25,8 +25,8 @@ public class RoadRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
-    @BeforeEach
-    void setUp() {
+    @Test
+    void shouldSaveRoadWithElements() {
         Road road = new Road("Java", "Java Developer");
 
         Element element1 = new Element("Spring", "Spring");
@@ -34,13 +34,51 @@ public class RoadRepositoryTest {
 
         road.getElements().add(element1);
         road.getElements().add(element2);
+
+        roadRepository.save(road);
+
+        assertThat(roadRepository.count()).isEqualTo(1);
+        assertThat(elementRepository.count()).isEqualTo(2);
+    }
+
+    @Test
+    void shouldSaveRoad() {
+        Road road = new Road("Golang", "Golang Developer");
+        Road expectedRoad = roadRepository.save(road);
+
+        Road actualRoad = roadRepository.getById(expectedRoad.getId());
+
+        assertThat(expectedRoad).isEqualTo(actualRoad);
+    }
+
+    @Test
+    void shouldFindRoadById() {
+        Road expectedRoad = new Road("Golang", "Golang Developer");
+        Long id = entityManager.persistAndGetId(expectedRoad, Long.class);
+
+        Road actualRoad = roadRepository.findById(id).get();
+
+        assertThat(expectedRoad).isEqualTo(actualRoad);
+
+    }
+
+    @Test
+    void shouldFindAllRoads() {
+        Road expectedRoad = new Road("Golang", "Golang Developer");
+        entityManager.persist(expectedRoad);
+
+        List<Road> roads = roadRepository.findAll();
+        assertThat(roads).hasSize(1);
     }
 
 
     @Test
-    void shouldFindById() {
-        assertThat(roadRepository.count()).isEqualTo(1);
-        assertThat(elementRepository.count()).isEqualTo(2);
+    void shouldDeleteRoad() {
+        Road expectedRoad = new Road("Golang", "Golang Developer");
+        Road road = entityManager.persist(expectedRoad);
+//        entityManager.flush();
+        roadRepository.delete(road);
+        assertThat(roadRepository.count()).isEqualTo(0);
     }
 
 }
