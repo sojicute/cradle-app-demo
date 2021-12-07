@@ -21,7 +21,7 @@ public class ElementController {
     }
 
     @GetMapping("/element")
-    public ResponseEntity<List<Element>> getAll() {
+    public ResponseEntity<List<Element>> getAllElements() {
         List<Element> elements = elementService.findAll();
         return elements != null && !elements.isEmpty()
                 ? new ResponseEntity<>(elements, HttpStatus.OK)
@@ -29,7 +29,7 @@ public class ElementController {
     }
 
     @GetMapping("/element/{id}")
-    public ResponseEntity<Element> get(@PathVariable("id") long id) {
+    public ResponseEntity<Element> getElement(@PathVariable("id") long id) {
         Element element = elementService.findElementById(id);
         return element != null
             ? new ResponseEntity<>(element, HttpStatus.OK)
@@ -37,19 +37,19 @@ public class ElementController {
     }
 
     @PostMapping("/element")
-    public ResponseEntity<Element> save(@RequestBody Element element) {
+    public ResponseEntity<Element> saveElement(@RequestBody Element element) {
         elementService.addNewElement(element);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/element/{id}")
-    public ResponseEntity<Element> update(@PathVariable long id, @RequestBody Element element) {
+    public ResponseEntity<Element> updateElement(@PathVariable long id, @RequestBody Element element) {
         elementService.updateElementById(id, element);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/element/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") long id) {
+    public ResponseEntity<Void> deleteElement(@PathVariable("id") long id) {
         elementService.deleteElementById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
