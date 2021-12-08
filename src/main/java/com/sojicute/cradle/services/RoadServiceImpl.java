@@ -27,6 +27,11 @@ public class RoadServiceImpl implements RoadService {
     }
 
     @Override
+    public Road addNewRoad(Road road) {
+        return roadRepository.save(road);
+    }
+
+    @Override
     public Road updateRoadById(Long id, Road road) {
         return roadRepository.save(road);
     }

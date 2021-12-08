@@ -1,8 +1,9 @@
 package com.sojicute.cradle.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sojicute.cradle.domain.Element;
-import com.sojicute.cradle.services.ElementServiceImpl;
+import com.sojicute.cradle.domain.Road;
+import com.sojicute.cradle.services.RoadService;
+import com.sojicute.cradle.services.RoadServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -19,17 +19,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WithMockUser(username = "user", password = "password")
-@WebMvcTest(ElementController.class)
-class ElementControllerTest {
+@WithMockUser(username = "user")
+@WebMvcTest(RoadController.class)
+class RoadControllerTest {
 
     @MockBean
-    private ElementServiceImpl elementService;
+    private RoadServiceImpl roadService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,26 +37,26 @@ class ElementControllerTest {
     private ObjectMapper mapper;
 
     private final String ID = "/1";
-    private final String URL = "/api/element";
+    private final String URL = "/api/road";
 
-    Element ELEMENT_1 = Element.builder()
+    Road ROAD_1 = Road.builder()
             .id(1L)
-            .title("Spring")
-            .text("framework")
+            .title("Java")
+            .description("Developer")
             .build();
 
-    Element ELEMENT_2 = Element.builder()
+    Road ROAD_2 = Road.builder()
             .id(2L)
-            .title("Docker")
-            .text("tool")
+            .title("Golang")
+            .description("Developer")
             .build();
 
 
     @Test
-    void shouldGetALlElements() throws Exception {
-        List<Element> elements = new ArrayList<>(Arrays.asList(ELEMENT_1, ELEMENT_2));
+    void shouldGetAllRoads() throws Exception {
+        List<Road> roads = new ArrayList<>(Arrays.asList(ROAD_1, ROAD_2));
 
-        Mockito.when(elementService.findAll()).thenReturn(elements);
+        Mockito.when(roadService.findAll()).thenReturn(roads);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get(URL)
@@ -65,49 +64,47 @@ class ElementControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void shouldGetRoadByID() throws Exception {
+        Mockito.when(roadService.findRoadById(ROAD_1.getId())).thenReturn(ROAD_1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(URL+ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 
     @Test
-    void shouldPostElement() throws Exception {
-        Mockito.when(elementService.addNewElement(ELEMENT_1)).thenReturn(ELEMENT_1);
+    void shouldPostRoad() throws Exception {
+        Mockito.when(roadService.addNewRoad(ROAD_1)).thenReturn(ROAD_1);
 
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post(URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(csrf())
-                .content(this.mapper.writeValueAsString(ELEMENT_1));
-
+                .content(this.mapper.writeValueAsString(ROAD_1));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isCreated());
     }
 
-
     @Test
-    void shouldGetElementById() throws Exception {
-        Mockito.when(elementService.findElementById(ELEMENT_1.getId())).thenReturn(ELEMENT_1);
-
-        mockMvc.perform(get(URL+ID)
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void shouldUpdateElement() throws Exception {
-        Mockito.when(elementService.updateElementById(ELEMENT_1.getId(), ELEMENT_1)).thenReturn(ELEMENT_1);
+    void shouldUpdateRoad() throws Exception{
+        Mockito.when(roadService.findRoadById(ROAD_1.getId())).thenReturn(ROAD_1);
 
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.put(URL+ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(csrf())
-                .content(this.mapper.writeValueAsString(ELEMENT_1));
+                .content(this.mapper.writeValueAsString(ROAD_1));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isOk());
     }
 
     @Test
-    void shouldDeleteElement() throws Exception {
-        Mockito.when(elementService.findElementById(ELEMENT_1.getId())).thenReturn(ELEMENT_1);
+    void shouldDeleteRoad() throws Exception {
+        Mockito.when(roadService.findRoadById(ROAD_1.getId())).thenReturn(ROAD_1);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .delete(URL+ID)

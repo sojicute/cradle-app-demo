@@ -10,6 +10,8 @@ public interface RoadService {
 
     Road findRoadById(Long id);
 
+    Road addNewRoad(Road road);
+
     Road updateRoadById(Long id, Road road);
 
     void deleteRoadById(Long id);

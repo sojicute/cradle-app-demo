@@ -1,16 +1,20 @@
 package com.sojicute.cradle.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
-@Data
+
 @Entity
 @Table(name = "roads")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
 public class Road {
 
     @Id
