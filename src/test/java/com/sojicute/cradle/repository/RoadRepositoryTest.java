@@ -29,11 +29,18 @@ public class RoadRepositoryTest {
     void shouldSaveRoadWithElements() {
         Road road = new Road("Java", "Java Developer");
 
-        Element element1 = new Element("Spring", "Spring");
-        Element element2 = new Element("Kafka", "jms");
+        Element element_1 = Element.builder()
+                .title("Spring")
+                .text("framework")
+                .build();
 
-        road.getElements().add(element1);
-        road.getElements().add(element2);
+        Element element_2 = Element.builder()
+                .title("Docker")
+                .text("tool")
+                .build();
+
+        road.getElements().add(element_1);
+        road.getElements().add(element_2);
 
         roadRepository.save(road);
 

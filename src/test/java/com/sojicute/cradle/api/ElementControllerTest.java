@@ -43,18 +43,30 @@ class ElementControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
-    Element ELEMENT1 = new Element("Spring", "framework");
-    Element ELEMENT2 = new Element("Gradle", "repository");
+    private final String ID = "/1";
+    private final String URL = "/api/element";
+
+    Element ELEMENT_1 = Element.builder()
+            .id(1L)
+            .title("Spring")
+            .text("framework")
+            .build();
+
+    Element ELEMENT_2 = Element.builder()
+            .id(2L)
+            .title("Docker")
+            .text("tool")
+            .build();
 
     @WithMockUser(username = "admin")
     @Test
     void shouldReturnALlElements() throws Exception {
-        List<Element> elements = new ArrayList<>(Arrays.asList(ELEMENT1, ELEMENT2));
+        List<Element> elements = new ArrayList<>(Arrays.asList(ELEMENT_1, ELEMENT_2));
 
         Mockito.when(elementService.findAll()).thenReturn(elements);
 
-
-        mockMvc.perform(get("/api/element")
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -63,16 +75,13 @@ class ElementControllerTest {
     @Test
     @WithMockUser(username = "admin")
     void shouldPostElement() throws Exception {
-        Element element = new Element("Spring", "framework");
-        element.setId(1L);
+        Mockito.when(elementService.addNewElement(ELEMENT_1)).thenReturn(ELEMENT_1);
 
-        Mockito.when(elementService.addNewElement(element)).thenReturn(element);
-
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/api/element")
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post(URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(csrf())
-                .content(this.mapper.writeValueAsString(element));
+                .content(this.mapper.writeValueAsString(ELEMENT_1));
 
 
         mockMvc.perform(mockRequest)
@@ -83,31 +92,37 @@ class ElementControllerTest {
     @WithMockUser(username = "admin")
     @Test
     void shouldGetElementById() throws Exception {
-        Element element = new Element("Spring", "framework");
-        element.setId(1L);
+        Mockito.when(elementService.findElementById(ELEMENT_1.getId())).thenReturn(ELEMENT_1);
 
-        Mockito.when(elementService.findElementById(element.getId())).thenReturn(element);
-
-        mockMvc.perform(get("/api/element/1")
+        mockMvc.perform(get(URL+ID)
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
     }
 
     @WithMockUser(username = "admin")
     @Test
-    void shouldUpdateElement() throws Exception{
-        Element updatedElement = new Element("Spring", "framework");
-        updatedElement.setId(1L);
+    void shouldUpdateElement() throws Exception {
+        Mockito.when(elementService.updateElementById(ELEMENT_1.getId(), ELEMENT_1)).thenReturn(ELEMENT_1);
 
-        Mockito.when(elementService.updateElementById(updatedElement.getId(), updatedElement)).thenReturn(updatedElement);
-
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.put("/api/element/1")
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.put(URL+ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(csrf())
-                .content(this.mapper.writeValueAsString(updatedElement));
+                .content(this.mapper.writeValueAsString(ELEMENT_1));
 
         mockMvc.perform(mockRequest)
+                .andExpect(status().isOk());
+    }
+
+    @WithMockUser(username = "admin")
+    @Test
+    void shouldDeleteElement() throws Exception {
+        Mockito.when(elementService.findElementById(ELEMENT_1.getId())).thenReturn(ELEMENT_1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete(URL+ID)
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 }

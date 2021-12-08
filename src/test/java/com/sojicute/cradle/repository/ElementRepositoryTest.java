@@ -24,28 +24,30 @@ public class ElementRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
+    Element ELEMENT_1 = Element.builder()
+            .title("Spring")
+            .text("framework")
+            .build();
+
     @Test
     void shouldSaveElement() {
-        Element element = new Element("Spring", "Framework");
-        Element expectedElement = elementRepository.save(element);
+        Element expectedElement = elementRepository.save(ELEMENT_1);
 
         assertThat(expectedElement).isNotNull();
     }
 
     @Test
     void shouldFindElementById() {
-        Element expectedElement = new Element("Spring", "Framework");
-        Long id = entityManager.persistAndGetId(expectedElement, Long.class);
+        Long id = entityManager.persistAndGetId(ELEMENT_1, Long.class);
 
         Optional<Element> element = elementRepository.findById(id);
 
-        assertThat(element.get().getTitle()).isEqualTo(expectedElement.getTitle());
+        assertThat(element.get().getTitle()).isEqualTo(ELEMENT_1.getTitle());
     }
 
     @Test
     void shouldFindAllElements() {
-        Element expectedElement = new Element("Spring", "Framework");
-        entityManager.persist(expectedElement);
+        entityManager.persist(ELEMENT_1);
 
         List<Element> elementList = elementRepository.findAll();
 
@@ -54,10 +56,9 @@ public class ElementRepositoryTest {
 
     @Test
     void shouldDeleteElements() {
-        Element expectedElement = new Element("Spring", "Framework");
-        entityManager.persist(expectedElement);
+        entityManager.persist(ELEMENT_1);
 
-        elementRepository.delete(expectedElement);
+        elementRepository.delete(ELEMENT_1);
 
         List<Element> elementList = elementRepository.findAll();
 

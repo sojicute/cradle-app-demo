@@ -1,16 +1,17 @@
 package com.sojicute.cradle.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
-@Data
+
 @Entity
 @Table(name = "elements")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Element {
 
     @Id
@@ -27,8 +28,4 @@ public class Element {
     @JoinColumn(name = "road_id")
     private Road road;
 
-    public Element(String title, String text) {
-        this.title = title;
-        this.text = text;
-    }
 }
