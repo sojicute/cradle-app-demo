@@ -6,6 +6,7 @@ import com.sojicute.cradle.security.dto.AuthRequest;
 import com.sojicute.cradle.security.dto.AuthResponse;
 import com.sojicute.cradle.security.dto.RegistrationRequest;
 import com.sojicute.cradle.services.UserService;
+import com.sojicute.cradle.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,7 @@ import javax.validation.Valid;
 public class AuthController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Autowired
     private JwtProvider jwtProvider;
