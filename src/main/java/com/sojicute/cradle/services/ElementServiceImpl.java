@@ -42,6 +42,9 @@ public class ElementServiceImpl implements ElementService{
         elementRepository.deleteById(id);
     }
 
-
+    @Override
+    public List<Element> findElementsByRoadId(Long id) {
+        return elementRepository.findElementsByRoadId(id);
+    }
 
 }
