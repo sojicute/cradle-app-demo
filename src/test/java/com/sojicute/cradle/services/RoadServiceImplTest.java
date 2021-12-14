@@ -52,13 +52,13 @@ class RoadServiceImplTest {
     @BeforeAll
     public void setUp() {
         Role roleUser = Role.builder().name(USER_ROLE).build();
-        User user = User.builder().id(USER_ID).username(USERNAME).password("{noop}password").role(roleUser).build();
+        User user = User.builder().id(USER_ID).username(USERNAME).password("{noop}password").roles(Set.of(roleUser)).build();
 
         Role roleEditor = Role.builder().name(EDITOR_ROLE).build();
-        User editor = User.builder().id(EDITOR_ID).username(EDITOR_NAME).role(roleEditor).build();
+        User editor = User.builder().id(EDITOR_ID).username(EDITOR_NAME).roles(Set.of(roleEditor)).build();
 
         Role roleAdmin = Role.builder().name(ADMIN_ROLE).build();
-        User admin = User.builder().id(ADMIN_ID).username(ADMIN_NAME).role(roleAdmin).build();
+        User admin = User.builder().id(ADMIN_ID).username(ADMIN_NAME).roles(Set.of(roleAdmin)).build();
 
         this.ROAD = Road.builder()
                 .id(1L)
