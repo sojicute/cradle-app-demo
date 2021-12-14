@@ -1,5 +1,7 @@
 package com.sojicute.cradle.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,10 +27,6 @@ public class User  {
     private String username;
 
     private String password;
-
-//    @ManyToOne
-//    @JoinColumn(name = "role_id")
-//    private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Road> roads = new ArrayList<>();
