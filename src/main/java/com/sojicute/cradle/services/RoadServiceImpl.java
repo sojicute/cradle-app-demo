@@ -29,19 +29,19 @@ public class RoadServiceImpl implements RoadService {
         return roadRepository.findAll();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @Override
     public Road findRoadById(Long id) {
         return roadRepository.findById(id).get();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.username.equals(#road.getUser().getUsername())")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or authentication.name == #road.getUser().getUsername()")
     @Override
     public Road addNewRoad(Road road) {
         return roadRepository.save(road);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #road.getUser().getId()")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or authentication.name == #road.getUser().getUsername()")
     @Override
     public Road updateRoadById(Long id, Road road) {
         return roadRepository.save(road);

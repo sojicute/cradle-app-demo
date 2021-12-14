@@ -5,101 +5,205 @@ import com.sojicute.cradle.domain.Role;
 import com.sojicute.cradle.domain.User;
 
 import com.sojicute.cradle.repository.RoadRepository;
-import com.sojicute.cradle.repository.UserRepository;
-import com.sojicute.cradle.security.CustomUserDetailsService;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RoadServiceImplTest {
 
     @Autowired
     private RoadServiceImpl roadService;
 
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-
     @MockBean
     private RoadRepository roadRepository;
 
-    private Road ROAD = Road.builder()
-            .id(1L)
-            .title("Java")
-            .description("Java developer")
-            .build();
+    private static final Long ADMIN_ID = 1L;
+    private static final String ADMIN_NAME = "admin";
+    private static final String ADMIN_ROLE = "ADMIN";
+
+    private static final Long EDITOR_ID = 2L;
+    private static final String EDITOR_NAME = "editor";
+    private static final String EDITOR_ROLE = "EDITOR";
 
 
-    @Test
-    void findAll() {
-    }
+    private static final Long USER_ID = 3L;
+    private static final String USERNAME = "sojicute";
+    private static final String USER_ROLE = "USER";
 
-    @Test
-    void shouldFindRoadById_Success() {
+    private Road ROAD;
 
-        Mockito.when(roadRepository.findById(1L)).thenReturn(Optional.of(ROAD));
+    @BeforeAll
+    public void setUp() {
+        Role roleUser = Role.builder().name(USER_ROLE).build();
+        User user = User.builder().id(USER_ID).username(USERNAME).password("{noop}password").role(roleUser).build();
 
-        Road expectedRoad = roadService.findRoadById(1L);
+        Role roleEditor = Role.builder().name(EDITOR_ROLE).build();
+        User editor = User.builder().id(EDITOR_ID).username(EDITOR_NAME).role(roleEditor).build();
 
-        assertThat(expectedRoad).isEqualTo(ROAD);
-    }
+        Role roleAdmin = Role.builder().name(ADMIN_ROLE).build();
+        User admin = User.builder().id(ADMIN_ID).username(ADMIN_NAME).role(roleAdmin).build();
 
-    @Test
-    @WithMockUser(username = "sojicute", roles={"USER"})
-    void shouldAddNewRoad() {
-
-        Role role = new Role();
-        role.setName("USER");
-
-        User user = User.builder()
-                .id(3L)
-                .username("sojicute")
-                .password("{noop}password")
-                .role(role)
-                .build();
-
-        Road road = Road.builder()
+        this.ROAD = Road.builder()
                 .id(1L)
                 .title("Java")
                 .description("Java developer")
                 .user(user)
                 .build();
-
-
-        Mockito.when(roadRepository.save(road)).thenReturn(road);
-
-        Road expectedRoad = roadService.addNewRoad(road);
-
-        assertThat(expectedRoad).isEqualTo(road);
     }
 
     @Test
-    void updateRoadById() {
+    @WithMockUser(username = USERNAME, roles = {USER_ROLE})
+    void shouldFindAllRoad() {
+        List<Road> roadList = Arrays.asList(ROAD);
+        Mockito.when(roadRepository.findAll()).thenReturn(roadList);
+
+        List<Road> expectedRoadList = roadService.findAll();
+
+        assertThat(roadList).isNotEmpty();
+        assertThat(roadList).isEqualTo(expectedRoadList);
     }
 
     @Test
-    void deleteRoadById() {
+    @WithAnonymousUser
+    void shouldFindAllRoad_AnonymousUser_AccessIsDenied() {
+        Assertions.assertThrows(AccessDeniedException.class, () -> {
+            roadService.findAll();
+        });
+    }
+
+    @Test
+    @WithMockUser(username = USERNAME, roles = {USER_ROLE})
+    void shouldFindRoadById() {
+        Mockito.when(roadRepository.findById(1L)).thenReturn(Optional.of(ROAD));
+
+        Road expectedRoad = roadService.findRoadById(1L);
+
+        assertThat(ROAD).isNotNull();
+        assertThat(ROAD).isEqualTo(expectedRoad);
+    }
+
+    @Test
+    @WithAnonymousUser
+    void shouldFindRoadById_AnonymousUser_AccessIsDenied() {
+        Mockito.when(roadRepository.findById(1L)).thenReturn(Optional.of(ROAD));
+
+        Assertions.assertThrows(AccessDeniedException.class, () -> {
+            roadService.findRoadById(1L);
+        });
+    }
+
+    @Test
+    @WithMockUser(username = USERNAME, roles = {USER_ROLE})
+    void shouldAddNewRoad_IsOwner_Success() {
+        Mockito.when(roadRepository.save(ROAD)).thenReturn(ROAD);
+
+        Road expectedRoad = roadService.addNewRoad(ROAD);
+
+        assertThat(ROAD).isEqualTo(expectedRoad);
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_NAME, roles = {ADMIN_ROLE})
+    void shouldAddNewRoad_AdminRole_Success() {
+        Mockito.when(roadRepository.save(ROAD)).thenReturn(ROAD);
+
+        Road expectedRoad = roadService.addNewRoad(ROAD);
+
+        assertThat(ROAD).isEqualTo(expectedRoad);
+    }
+
+    @Test
+    @WithAnonymousUser
+    void shouldAddNewRoad_AnonymousUser_AccessIsDenied() {
+        Mockito.when(roadRepository.save(ROAD)).thenReturn(ROAD);
+
+        Assertions.assertThrows(AccessDeniedException.class, () -> {
+            roadService.addNewRoad(ROAD);
+        });
+    }
+
+    @Test
+    @WithMockUser(username = EDITOR_NAME, roles = {USER_ROLE})
+    void shouldAddNewRoad_IsNotOwner_AccessIsDenied() {
+        Mockito.when(roadRepository.save(ROAD)).thenReturn(ROAD);
+
+        Assertions.assertThrows(AccessDeniedException.class, () -> {
+            roadService.addNewRoad(ROAD);
+        });
+    }
+
+    @Test
+    @WithMockUser(username = USERNAME, roles = {USER_ROLE})
+    void shouldUpdateRoadById_IsOwner_Success() {
+        Mockito.when(roadRepository.findById(ROAD.getId())).thenReturn(Optional.ofNullable(ROAD));
+
+        roadService.updateRoadById(ROAD.getId(), ROAD);
+
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_NAME, roles = {ADMIN_ROLE})
+    void shouldUpdateRoadById_IsAdmin_Success() {
+        Mockito.when(roadRepository.findById(ROAD.getId())).thenReturn(Optional.ofNullable(ROAD));
+
+        roadService.updateRoadById(ROAD.getId(), ROAD);
+
+    }
+
+
+    @Test
+    @WithMockUser(username = EDITOR_NAME, roles = {USER_ROLE})
+    void shouldUpdateRoadById_IsNotOwner_AccessIsDenied() {
+        Mockito.when(roadRepository.findById(ROAD.getId())).thenReturn(Optional.ofNullable(ROAD));
+
+        Assertions.assertThrows(AccessDeniedException.class, () -> {
+            roadService.updateRoadById(ROAD.getId(), ROAD);
+        });
+    }
+
+    @Test
+    @WithAnonymousUser
+    void shouldUpdateRoadById_AnonymousUser_AccessIsDenied() {
+        Mockito.when(roadRepository.findById(ROAD.getId())).thenReturn(Optional.ofNullable(ROAD));
+
+        Assertions.assertThrows(AccessDeniedException.class, () -> {
+            roadService.updateRoadById(ROAD.getId(), ROAD);
+        });
+    }
+
+
+    @Test
+    @WithMockUser(username = ADMIN_NAME, roles = {ADMIN_ROLE})
+    void shouldDeleteRoadById_IsAdmin_Success() {
+        Mockito.when(roadRepository.findById(ROAD.getId())).thenReturn(Optional.ofNullable(ROAD));
+
+        roadService.deleteRoadById(ROAD.getId());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void shouldDeleteRoadById_AnonymousUser_AccessIsDenied() {
+        Mockito.when(roadRepository.findById(ROAD.getId())).thenReturn(Optional.ofNullable(ROAD));
+
+        Assertions.assertThrows(AccessDeniedException.class, () -> {
+            roadService.updateRoadById(ROAD.getId(), ROAD);
+        });
     }
 }
