@@ -2,7 +2,6 @@ package com.sojicute.cradle.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sojicute.cradle.domain.Road;
-import com.sojicute.cradle.services.RoadService;
 import com.sojicute.cradle.services.RoadServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

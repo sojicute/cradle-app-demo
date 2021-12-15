@@ -25,7 +25,7 @@ public class RoadRepositoryTest {
 
     @Test
     void shouldSaveRoadWithElements() {
-        Road road = new Road("Java", "Java Developer");
+        Road road = Road.builder().title("Java").description("Java Developer").build();
 
         Element element_1 = Element.builder()
                 .title("Spring")
@@ -48,7 +48,7 @@ public class RoadRepositoryTest {
 
     @Test
     void shouldSaveRoad() {
-        Road road = new Road("Golang", "Golang Developer");
+        Road road = Road.builder().title("Golang").description("Golang Developer").build();
         Road expectedRoad = roadRepository.save(road);
 
         Road actualRoad = roadRepository.getById(expectedRoad.getId());
@@ -58,7 +58,7 @@ public class RoadRepositoryTest {
 
     @Test
     void shouldFindRoadById() {
-        Road expectedRoad = new Road("Golang", "Golang Developer");
+        Road expectedRoad = Road.builder().title("Golang").description("Golang Developer").build();
         Long id = entityManager.persistAndGetId(expectedRoad, Long.class);
 
         Road actualRoad = roadRepository.findById(id).get();
@@ -69,7 +69,7 @@ public class RoadRepositoryTest {
 
     @Test
     void shouldFindAllRoads() {
-        Road expectedRoad = new Road("Golang", "Golang Developer");
+        Road expectedRoad = Road.builder().title("Golang").description("Golang Developer").build();
         entityManager.persist(expectedRoad);
 
         List<Road> roads = roadRepository.findAll();
@@ -79,7 +79,7 @@ public class RoadRepositoryTest {
 
     @Test
     void shouldDeleteRoad() {
-        Road expectedRoad = new Road("Golang", "Golang Developer");
+        Road expectedRoad = Road.builder().title("Golang").description("Golang Developer").build();
         Road road = entityManager.persist(expectedRoad);
 //        entityManager.flush();
         roadRepository.delete(road);

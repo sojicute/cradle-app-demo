@@ -1,9 +1,11 @@
 package com.sojicute.cradle.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +34,6 @@ public class Road {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
-
-    public Road(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
 }

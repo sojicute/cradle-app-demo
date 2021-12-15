@@ -1,6 +1,5 @@
 package com.sojicute.cradle.util;
 
-import com.sojicute.cradle.domain.Element;
 import com.sojicute.cradle.domain.Road;
 import com.sojicute.cradle.domain.Role;
 import com.sojicute.cradle.domain.User;
@@ -12,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -35,30 +32,33 @@ public class DataLoader {
 
     private static final Long ADMIN_ID = 1L;
     private static final String ADMIN_NAME = "admin";
-    private static final String ADMIN_ROLE = "ADMIN";
+    private static final String ADMIN_ROLE = "ROLE_ADMIN";
 
     private static final Long EDITOR_ID = 2L;
     private static final String EDITOR_NAME = "editor";
-    private static final String EDITOR_ROLE = "EDITOR";
+    private static final String EDITOR_ROLE = "ROLE_EDITOR";
 
 
     private static final Long USER_ID = 3L;
     private static final String USERNAME = "sojicute";
-    private static final String USER_ROLE = "USER";
+    private static final String USER_ROLE = "ROLE_USER";
 
     @PostConstruct
     public void loadData() {
         Role role = Role.builder().name(USER_ROLE).build();
 
+        Role savedRole = roleRepository.save(role);
+
+
         Road road = Road.builder().title("New").build();
 
-        User user = User.builder().username(USERNAME).password("{noop}password").roads(List.of(road)).roles(Set.of(role)).build();
-
+        User user = User.builder().username(USERNAME).password("password").roads(List.of(road)).roles(List.of(role)).build();
+//
         User sojicute = userRepository.save(user);
-
-        role.setUser(sojicute);
-
-        roleRepository.save(role);
+//
+//        role.setUsers(List.of(sojicute));
+//
+//        roleRepository.save(role);
 
 
 //        Role roleEditor = Role.builder().name(EDITOR_ROLE).build();

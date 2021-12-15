@@ -3,7 +3,6 @@ package com.sojicute.cradle.services;
 import com.sojicute.cradle.domain.Road;
 import com.sojicute.cradle.domain.Role;
 import com.sojicute.cradle.domain.User;
-
 import com.sojicute.cradle.repository.RoadRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,7 +17,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,15 +52,15 @@ class RoadServiceImplTest {
     private Road ROAD;
 
     @BeforeAll
-    public void setUp() {
+    public void SetUp() {
         Role roleUser = Role.builder().name(USER_ROLE).build();
-        User user = User.builder().id(USER_ID).username(USERNAME).password("{noop}password").roles(Set.of(roleUser)).build();
+        User user = User.builder().id(USER_ID).username(USERNAME).password("{noop}password").roles(List.of(roleUser)).build();
 
         Role roleEditor = Role.builder().name(EDITOR_ROLE).build();
-        User editor = User.builder().id(EDITOR_ID).username(EDITOR_NAME).roles(Set.of(roleEditor)).build();
+        User editor = User.builder().id(EDITOR_ID).username(EDITOR_NAME).roles(List.of(roleEditor)).build();
 
         Role roleAdmin = Role.builder().name(ADMIN_ROLE).build();
-        User admin = User.builder().id(ADMIN_ID).username(ADMIN_NAME).roles(Set.of(roleAdmin)).build();
+        User admin = User.builder().id(ADMIN_ID).username(ADMIN_NAME).roles(List.of(roleAdmin)).build();
 
         this.ROAD = Road.builder()
                 .id(1L)
