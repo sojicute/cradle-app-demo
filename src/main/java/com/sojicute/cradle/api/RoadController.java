@@ -24,34 +24,34 @@ public class RoadController {
     @GetMapping("/road")
     public ResponseEntity<List<Road>> getAllRoads() {
         List<Road> roads = roadService.findAll();
-        return roads != null && !roads.isEmpty()
-                ? new ResponseEntity<>(roads, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        if (roads.isEmpty() && roads == null ) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(roads, HttpStatus.OK);
     }
 
     @GetMapping("/road/{id}")
     public ResponseEntity<Road> getRoad(@PathVariable("id") long id) {
         Road road = roadService.findRoadById(id);
-        return road != null
-                ? new ResponseEntity<>(road, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(road, HttpStatus.OK);
     }
 
     @PostMapping("/road")
     public ResponseEntity<Road> saveRoad(@RequestBody Road road){
-        roadService.addNewRoad(road);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        Road createdRoad = roadService.addNewRoad(road);
+        return new ResponseEntity<>(createdRoad, HttpStatus.CREATED);
     }
 
     @PutMapping("/road/{id}")
     public ResponseEntity<Road> updateRoad(@PathVariable("id") long id, @RequestBody Road road ) {
-        roadService.updateRoadById(id, road);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Road updatedRoad = roadService.updateRoadById(id, road);
+        return new ResponseEntity<>(updatedRoad, HttpStatus.OK);
     }
 
     @DeleteMapping("/road/{id}")
     public ResponseEntity<Void> deleteRoad(@PathVariable("id") long id) {
         roadService.deleteRoadById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

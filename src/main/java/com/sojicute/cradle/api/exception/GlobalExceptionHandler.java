@@ -10,8 +10,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({UsernameNotFoundException.class})
+    @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Response> handleUserNotFoundException(UsernameNotFoundException ex) {
+        Response response = new Response(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Response> handleEntityNotFoundException(EntityNotFoundException ex) {
+        Response response = new Response(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Response> handleGlobalException(Exception ex) {
         Response response = new Response(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

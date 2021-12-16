@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -26,7 +27,9 @@ public class RoadServiceImpl implements RoadService {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Override
     public Road findRoadById(Long id) {
-        return roadRepository.findById(id).get();
+        Road road = roadRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Not found Road with id = " + id));
+        return road;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or authentication.name == #road.getUser().getUsername()")
@@ -38,6 +41,11 @@ public class RoadServiceImpl implements RoadService {
     @PreAuthorize("hasRole('ROLE_ADMIN') or authentication.name == #road.getUser().getUsername()")
     @Override
     public Road updateRoadById(Long id, Road road) {
+        Road _road = roadRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("Not found Road with id =" + id));
+
+        _road.setTitle(road.getTitle());
+        _road.setDescription(road.getDescription());
         return roadRepository.save(road);
     }
 
