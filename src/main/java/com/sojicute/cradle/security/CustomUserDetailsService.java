@@ -1,8 +1,12 @@
 package com.sojicute.cradle.security;
 
+import com.sojicute.cradle.api.exception.UserNameNotFoundException;
 import com.sojicute.cradle.domain.User;
 import com.sojicute.cradle.repository.UserRepository;
+import com.sojicute.cradle.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -10,14 +14,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private UserServiceImpl userService;
+
+    public CustomUserDetailsService(@Lazy UserServiceImpl userService) {
+        this.userService = userService;
+    }
 
     @Override
-    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userService.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("User '" +username+ "' not found");
+            throw new UsernameNotFoundException("User not found with username: " + username);
         }
         return CustomUserDetails.toCustomUserDetails(user);
     }

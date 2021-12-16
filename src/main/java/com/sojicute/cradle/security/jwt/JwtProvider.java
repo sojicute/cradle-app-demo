@@ -1,5 +1,7 @@
 package com.sojicute.cradle.security.jwt;
 
+import antlr.TokenStream;
+import com.sojicute.cradle.api.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -30,9 +32,8 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
         } catch (Exception  e) {
-
+            throw new InvalidTokenException("Invalid token" + e.getMessage());
         }
-        return false;
     }
 
     public String getLoginFromToken(String token) {

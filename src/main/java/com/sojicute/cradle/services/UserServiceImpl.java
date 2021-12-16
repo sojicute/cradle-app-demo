@@ -1,11 +1,14 @@
 package com.sojicute.cradle.services;
 
+import com.sojicute.cradle.api.exception.UserNameNotFoundException;
 import com.sojicute.cradle.domain.Role;
 import com.sojicute.cradle.domain.User;
 import com.sojicute.cradle.repository.RoleRepository;
 import com.sojicute.cradle.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +29,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User '" +username+ "' not found");
+        if (user != null) {
+            return user;
         }
-        return user;
+        throw new UsernameNotFoundException("User " + username + " was not found in the database");
     }
 
     @Override

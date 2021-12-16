@@ -7,6 +7,7 @@ import com.sojicute.cradle.security.dto.RegistrationRequest;
 import com.sojicute.cradle.security.jwt.JwtProvider;
 import com.sojicute.cradle.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +35,9 @@ public class AuthController {
     @PostMapping("/auth")
     public AuthResponse auth(@RequestBody AuthRequest request) {
         User user = userService.findByUsernameAndPassword(request.getUsername(), request.getPassword());
+        if (user == null) {
+            throw new UsernameNotFoundException(request.getUsername()+" not found");
+        }
         String token = jwtProvider.generateToken(user.getUsername());
         return new AuthResponse(token);
     }

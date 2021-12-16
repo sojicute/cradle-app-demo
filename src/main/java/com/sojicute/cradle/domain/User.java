@@ -30,7 +30,7 @@ public class User  {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Road> roads = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "role_id"),
