@@ -3,7 +3,6 @@ package com.sojicute.cradle.services;
 import com.sojicute.cradle.domain.Road;
 import com.sojicute.cradle.repository.RoadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 

@@ -3,7 +3,6 @@ package com.sojicute.cradle.security.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
@@ -23,14 +22,21 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         String message;
 
-        if (authException.getCause() != null) {
-            message = authException.getCause().toString() + " " + authException.getMessage();
+        final Exception exception = (Exception) request.getAttribute("exception");
+
+        if (exception != null) {
+            byte[] body = new ObjectMapper().writeValueAsBytes(Collections.singletonMap("error", exception.getMessage()));
+            response.getOutputStream().write(body);
         } else {
-            message = authException.getMessage();
+            if (authException.getCause() != null) {
+                message = authException.getCause().toString() + " " + authException.getMessage();
+            } else {
+                message = authException.getMessage();
+            }
+
+            byte[] body = new ObjectMapper().writeValueAsBytes(Collections.singletonMap("error", message));
+
+            response.getOutputStream().write(body);
         }
-
-        byte[] body = new ObjectMapper().writeValueAsBytes(Collections.singletonMap("error", message));
-
-        response.getOutputStream().write(body);
     }
 }
