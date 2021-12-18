@@ -1,9 +1,9 @@
 package com.sojicute.cradle.api.exception;
 
-public class EntityNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends RuntimeException {
     private static final long serialVersion = 1L;
 
-    public EntityNotFoundException(String msg) {
+    public ResourceNotFoundException(String msg) {
         super(msg);
     }
 }

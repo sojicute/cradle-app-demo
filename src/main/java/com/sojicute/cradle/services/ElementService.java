@@ -17,4 +17,10 @@ public interface ElementService {
     void deleteElementById(Long id);
 
     List<Element> findElementsByRoadId(Long id);
+
+    Element createElement(Long roadId, Element element);
+
+    Element updateElement(Long roadId, Long elementId, Element element);
+
+    void deleteElement(Long roadId, Long elementId);
 }
