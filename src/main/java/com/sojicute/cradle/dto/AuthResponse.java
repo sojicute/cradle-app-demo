@@ -1,4 +1,4 @@
-package com.sojicute.cradle.security.dto;
+package com.sojicute.cradle.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

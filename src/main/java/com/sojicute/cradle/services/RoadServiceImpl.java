@@ -1,6 +1,7 @@
 package com.sojicute.cradle.services;
 
 import com.sojicute.cradle.domain.Road;
+import com.sojicute.cradle.exception.ResourceNotFoundException;
 import com.sojicute.cradle.repository.RoadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,7 @@ public class RoadServiceImpl implements RoadService {
     @Override
     public Road findRoadById(Long id) {
         Road road = roadRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Not found Road with id = " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Road with id = " + id));
         return road;
     }
 
@@ -42,7 +43,7 @@ public class RoadServiceImpl implements RoadService {
     @Override
     public Road updateRoadById(Long id, Road road) {
         Road _road = roadRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("Not found Road with id =" + id));
+                .orElseThrow(()-> new ResourceNotFoundException("Not found Road with id =" + id));
 
         _road.setTitle(road.getTitle());
         _road.setDescription(road.getDescription());

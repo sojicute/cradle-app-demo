@@ -1,6 +1,6 @@
 package com.sojicute.cradle.services;
 
-import com.sojicute.cradle.api.exception.ResourceNotFoundException;
+import com.sojicute.cradle.exception.ResourceNotFoundException;
 import com.sojicute.cradle.domain.Element;
 import com.sojicute.cradle.repository.ElementRepository;
 import com.sojicute.cradle.repository.RoadRepository;

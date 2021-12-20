@@ -74,7 +74,7 @@ public class ElementController {
         return new ResponseEntity<>(elementService.updateElement(roadId, elementId, element), HttpStatus.OK);
     }
 
-    @DeleteMapping("/road/{roadId/elements/{elementId}")
+    @DeleteMapping("/road/{roadId}/elements/{elementId}")
     public ResponseEntity<Void> deleteElement(@PathVariable("roadId") Long roadId, @PathVariable("elementId") Long elementId) {
         elementService.deleteElement(roadId, elementId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

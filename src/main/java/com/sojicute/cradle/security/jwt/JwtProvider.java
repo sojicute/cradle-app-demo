@@ -1,6 +1,6 @@
 package com.sojicute.cradle.security.jwt;
 
-import com.sojicute.cradle.api.exception.InvalidTokenException;
+import com.sojicute.cradle.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
