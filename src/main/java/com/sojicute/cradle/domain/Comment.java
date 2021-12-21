@@ -1,6 +1,5 @@
 package com.sojicute.cradle.domain;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,27 +7,25 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-
 @Entity
-@Table(name = "elements")
+@Table(name = "comments")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Element {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "text")
     private String text;
 
     @ManyToOne
-    @JoinColumn(name = "road_id")
-    private Road road;
+    @JoinColumn(name = "user_id")
+    User user;
 
+    @ManyToOne
+    @JoinColumn(name = "road_id")
+    Road road;
 }

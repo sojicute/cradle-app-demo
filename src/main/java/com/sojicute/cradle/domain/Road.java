@@ -32,6 +32,9 @@ public class Road {
     @OneToMany(mappedBy = "road", cascade = CascadeType.ALL)
     private List<Element> elements = new ArrayList<>();
 
+    @OneToMany(mappedBy = "road", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
